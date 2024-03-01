@@ -1,6 +1,7 @@
 import chalk from "chalk";
 export function listCommands() {
-  console.log(chalk.yellowBright("help") + " - Lists all the commands");
+  console.log(chalk.yellowBright("Note functions:\n"));
+
   console.log(
     `${chalk.yellowBright("add note")} ${chalk.yellowBright(
       chalk.italic("note")
@@ -20,6 +21,12 @@ export function listCommands() {
   console.log(
     `${chalk.yellowBright("note info")} ${chalk.yellowBright(
       chalk.italic("note id")
-    )} - Shows all the details of a note`
+    )} - Shows all the details of a note\n`
   );
+
+  console.log(chalk.yellowBright("Others:\n"));
+
+  console.log(chalk.yellowBright("help") + " - Lists all the commands");
+  console.log(`${chalk.yellowBright("exit")} - Exits the app`);
+  console.log(`${chalk.yellowBright("delete account")} - Deletes your account`);
 }

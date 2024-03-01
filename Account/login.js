@@ -10,56 +10,44 @@ function returnUsername() {
 export { returnUsername };
 export function login() {
   let db = client.db("users");
-  function getPassword() {
-    inquirer
-      .prompt([
-        {
-          name: "password",
-          type: "password",
-          mask: true,
-          message: "Password: ",
-        },
-      ])
-      .then((Password) => {
-        password = Password.password;
-        db.collection("userData")
-          .findOne({
-            username: username,
-          })
-          .then((user) => {
-            let actualPass = decrypt(user.password.text, user.password.key);
-            if (Password.password === actualPass.text) {
-              console.log(chalk.greenBright("Logged in!"));
-              Command();
-            } else {
-              console.log(chalk.redBright("Incorrect password entered"));
-              getPassword();
-            }
-          });
-      });
+  async function getPassword() {
+    let prompt = await inquirer.prompt([
+      {
+        name: "password",
+        type: "password",
+        mask: true,
+        message: "Password: ",
+      },
+    ]);
+    password = prompt.password;
+    let user = await db.collection("userData").findOne({
+      username: username,
+    });
+    let actualPass = decrypt(user.password.text, user.password.key);
+    if (password === actualPass.text) {
+      console.log(chalk.greenBright("Logged in!"));
+      Command();
+    } else {
+      console.log(chalk.redBright("Incorrect password entered"));
+      getPassword();
+    }
   }
-  function getUsername() {
-    inquirer
-      .prompt([
-        {
-          name: "username",
-          type: "input",
-          message: "Username: ",
-        },
-      ])
-      .then((Username) => {
-        username = Username.username.trim();
-        db.collection("userData")
-          .findOne({ username: username })
-          .then((user) => {
-            if (user) {
-              getPassword();
-            } else {
-              console.log(chalk.yellowBright("User not found"));
-              getUsername();
-            }
-          });
-      });
+  async function getUsername() {
+    let prompt = await inquirer.prompt([
+      {
+        name: "username",
+        type: "input",
+        message: "Username: ",
+      },
+    ]);
+    username = prompt.username.trim();
+    let user = await db.collection("userData").findOne({ username: username });
+    if (user) {
+      getPassword();
+    } else {
+      console.log(chalk.yellowBright("User not found"));
+      getUsername();
+    }
   }
   getUsername();
 }
